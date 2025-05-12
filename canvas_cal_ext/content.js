@@ -1,38 +1,21 @@
-const eventTitles = document.querySelectorAll('.agenda-event__title');
+const checkEvents = setInterval(() => {
+    const events = document.querySelectorAll('.agenda-event__item');
+    if (events.length > 0) {
+        console.log(`${events.length} events found.`);
+        clearInterval(checkEvents);
 
-eventTitles.forEach(titleElement => {
-    const timeElement = titleElement.closest('.agenda-event').querySelector('.agenda-event__time');
+        events.forEach(event => {
+            const title = event.querySelector('.agenda-event__title')?.innerText.trim();
+            const time = event.querySelector('.agenda-event__time')?.innerText.trim() || 'No time listed';
+            const status = event.querySelector('.screenreader-only')?.innerText;
 
-    console.log({
-        title: titleElement.innerText.trim(),
-        time: timeElement ? timeElement.innerText.trim() : 'No time listed',
-    });
-});
-
-      
-      
-
-    function createButton(){
-        const button = document.createElement("button");
-        button.innerText = "Organize Calendar";
-
-        button.style.position = "fixed";
-        button.style.top = "10px";
-        button.style.right = "10px";
-        button.style.zIndex = "9999";
-        button.style.padding = "10px 15px";
-        button.style.backgroundColor = "#008CBA";
-        button.style.color = "#fff";
-        button.style.border = "none";
-        button.style.borderRadius = "5px";
-        button.style.cursor = "pointer";
-
-        button.addEventListener("click", () => {
-        alert("Button clicked! Now let\'s organize the calendar!");
-
+            console.log({
+                title: title || "No title found",
+                time: time || "No time listed",
+                status: status || "No status listed",
+            });
         });
 
-        document.body.appendChild(button);
+        createButton(); // Create the button after events are found
     }
-    
-    
+}, 1000);
