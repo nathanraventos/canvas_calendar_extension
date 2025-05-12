@@ -1,18 +1,14 @@
-if (window.location.href.includes("calendar"))
-{
+const eventTitles = document.querySelectorAll('.agenda-event__title');
 
-    console.log("Hello from the Canvas Calendar Organizer!");
-      
-    window.addEventListener('load', () => {
-        const events = document.querySelectorAll('.calendar-event'); // Select all event elements
-        events.forEach(event => {
-            console.log({
-                title: event.querySelector('.calendar-event-title')?.innerText,
-                date: event.querySelector('.calendar-event-date')?.innerText,
-                time: event.querySelector('.calendar-event-time')?.innerText,
-            });
-        });
+eventTitles.forEach(titleElement => {
+    const timeElement = titleElement.closest('.agenda-event').querySelector('.agenda-event__time');
+
+    console.log({
+        title: titleElement.innerText.trim(),
+        time: timeElement ? timeElement.innerText.trim() : 'No time listed',
     });
+});
+
       
       
 
@@ -40,4 +36,3 @@ if (window.location.href.includes("calendar"))
     }
     
     
-}
