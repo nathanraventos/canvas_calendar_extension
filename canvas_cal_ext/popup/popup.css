@@ -1,21 +1,25 @@
 body{
     font-family: Arial, Helvetica, sans-serif;
-    min-width: 10px;
+    min-width: 250px;
     margin: 10px;
 }
 h1 {
     font-size: 16px;
     margin-bottom: 10px;
 }
-button{
-    padding: 8px 12px;
-    margin-top: 10px;
-    border: none;
-    background-color: #007acc;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
+.event {
+    margin-top: 8px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
 }
-button:hover{
-    background-color: #005ea2;
+.event-title{
+    font-weight: bold;
+}
+.event-time{
+    color: #333;
+    font-size: 13px;
+}
+.event-status {
+    font-size: 12px;
+    color: #555;
 }

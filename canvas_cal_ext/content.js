@@ -1,5 +1,6 @@
 const checkEvents = setInterval(() => {
     const events = document.querySelectorAll('.agenda-event__item');
+
     if (events.length > 0) {
         console.log(`${events.length} events found.`);
         clearInterval(checkEvents);
@@ -15,7 +16,6 @@ const checkEvents = setInterval(() => {
                 status: status || "No status listed",
             });
         });
-
-        createButton(); // Create the button after events are found
     }
 }, 1000);
+console.log("Hello from content.js");
