@@ -1,26 +1,113 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: sans-serif;
   margin: 10px;
+  width: 400px;
+}
+
+#calendar-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+#weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 6px;
 }
 
 #calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: auto;
   gap: 4px;
   margin-bottom: 16px;
 }
 
-.day {
-  border: 1px solid #ccc;
-  padding: 6px;
-  text-align: center;
-  cursor: pointer;
+#calendar > div {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+.day {
+  position: relative;
+  border: 1px solid #ccc;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+}
+
+.day-number {
+  font-size: 20px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.count-badge {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background-color: #3498db;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-weight: bold;
+  user-select: none;
+  z-index: 2;
+}
+
 
 .day:hover {
   background-color: #eef;
 }
 
+.day.empty {
+  background: #f9f9f9;
+  cursor: default;
+}
+
 #events {
   margin-top: 20px;
+}
+
+#events h3 {
+  margin-bottom: 6px;
+}
+
+#events a {
+  display: inline-block;
+  color: #1a73e8;        /* Google-blue style link color */
+  text-decoration: none; /* No underline by default */
+  font-weight: 500;
+  margin: 4px 0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+#events a:hover,
+#events a:focus {
+  text-decoration: underline;
+  background-color: #e8f0fe;  /* subtle highlight on hover/focus */
+  outline: none;
+}
+
+#events div {
+  margin-bottom: 6px;  /* space between assignment links */
 }
