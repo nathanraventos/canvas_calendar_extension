@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Canvas Calendar Organizer",
+  "version": "1.0",
+  "description": "View and organize your Canvas assignments via API.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://byui.instructure.com/api/v1/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
