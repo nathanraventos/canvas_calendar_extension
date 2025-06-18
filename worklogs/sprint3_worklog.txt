@@ -1,0 +1,9 @@
+Work Log for Nathan Raventos:
+
+|  Date   |  Time | Duration | Description
+05/26/2025  12:45   1hr       Error catching
+05/27/2025  7pm     2hrs      popup.js and css, making it look better on extension
+05/28/2025  11:45   2 hrs     popup html and js fixing bugs and adding link to assignments.
+06/02/2025  12:45   1hr       restarting everything with API instead of in-web gets
+06/04/2025  11:45   2 hrs     connecting event containers to js
+06/07/2025  8pm     2 hours   calendar css, new api learning

@@ -7,9 +7,50 @@
 body {
   font-family: sans-serif;
   margin: 10px;
-  width: 400px;
+  width: 800px;
+  height: 600px;
 }
 
+/* Flex container for left + right panels */
+.popup-container {
+  display: flex;
+  gap: 16px;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+/* Left: Assignment list */
+#assignments-list {
+  flex: 1;
+  border: 1px solid #ccc;
+  padding: 8px;
+  overflow-y: auto;
+  max-height: 580px;
+}
+
+.assignment-item {
+  padding: 6px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.assignment-item a {
+  text-decoration: none;
+  color: #333;
+}
+
+.assignment-item a:hover {
+  text-decoration: underline;
+}
+
+/* Right: Calendar and events */
+.calendar-side {
+  flex: 2;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Calendar navigation */
 #calendar-nav {
   display: flex;
   justify-content: center;
@@ -18,6 +59,7 @@ body {
   margin-bottom: 10px;
 }
 
+/* Weekday labels */
 #weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -26,24 +68,19 @@ body {
   margin-bottom: 6px;
 }
 
+/* Calendar grid */
 #calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-auto-rows: auto;
+  grid-auto-rows: 60px;
   gap: 4px;
   margin-bottom: 16px;
 }
 
+/* Each day cell */
 #calendar > div {
-  min-height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.day {
   position: relative;
   border: 1px solid #ccc;
-  height: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -72,7 +109,6 @@ body {
   z-index: 2;
 }
 
-
 .day:hover {
   background-color: #eef;
 }
@@ -82,8 +118,12 @@ body {
   cursor: default;
 }
 
+/* Events for selected day */
 #events {
-  margin-top: 20px;
+  border: 1px solid #ccc;
+  padding: 8px;
+  overflow-y: auto;
+  max-height: 220px;
 }
 
 #events h3 {
@@ -92,8 +132,8 @@ body {
 
 #events a {
   display: inline-block;
-  color: #1a73e8;        /* Google-blue style link color */
-  text-decoration: none; /* No underline by default */
+  color: #1a73e8;
+  text-decoration: none;
   font-weight: 500;
   margin: 4px 0;
   padding: 2px 6px;
@@ -104,10 +144,58 @@ body {
 #events a:hover,
 #events a:focus {
   text-decoration: underline;
-  background-color: #e8f0fe;  /* subtle highlight on hover/focus */
+  background-color: #e8f0fe;
   outline: none;
 }
 
 #events div {
-  margin-bottom: 6px;  /* space between assignment links */
+  margin-bottom: 6px;
+}
+
+#assignments-list h3 {
+  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.today {
+  background-color: #ffeaa7;
+}
+
+/* Checkbox circle */
+.checkbox-circle {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid #3498db;
+  border-radius: 50%;
+  margin-right: 10px;
+  vertical-align: middle;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.checkbox-circle.checked {
+  background-color: #3498db;
+  border-color: #3498db;
+}
+
+/* Add checkmark inside circle when checked */
+.checkbox-circle.checked::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  width: 4px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Completed assignments greyed out */
+.assignment-item.completed a {
+  color: #888;
+  text-decoration: line-through;
 }
