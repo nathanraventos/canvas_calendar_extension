@@ -4,6 +4,7 @@ const baseUrl = "https://byui.instructure.com/api/v1/";
 let assignmentsCache = [];
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth();
+let coursesMap = {};
 
 const completedAssignments = new Set();
 
@@ -19,6 +20,11 @@ async function fetchCourses() {
     headers: { "Authorization": `Bearer ${accessToken}` }
   });
   const data = await response.json();
+
+  data.forEach(course => {
+    coursesMap[course.id] = course.name;
+  });
+
   return data;
 }
 
@@ -117,15 +123,27 @@ function buildCalendar(events, year, month) {
     dayDiv.appendChild(dayNumber);
 
     if (eventsByDate[dayStr]) {
-      const countBadge = document.createElement("div");
-      countBadge.className = "count-badge";
-      // Show count of incomplete assignments only
-      const incompleteCount = eventsByDate[dayStr].filter(a => !completedAssignments.has(a.id)).length;
+      const assignmentsToday = eventsByDate[dayStr];
+      const incompleteCount = assignmentsToday.filter(a => !completedAssignments.has(a.id)).length;
+
+      // Badge for incomplete assignments
       if (incompleteCount > 0) {
+        const countBadge = document.createElement("div");
+        countBadge.className = "count-badge";
         countBadge.textContent = incompleteCount;
         dayDiv.appendChild(countBadge);
-        dayDiv.style.background = "#def";
       }
+
+      // Color based on total assignments (not just incomplete)
+      const totalCount = assignmentsToday.length;
+      if (totalCount <= 3) {
+        dayDiv.style.background = "#d4edda"; // green
+      } else if (totalCount <= 7) {
+        dayDiv.style.background = "#fff3cd"; // yellow
+      } else {
+        dayDiv.style.background = "#f8d7da"; // red
+      }
+
     }
 
     // Highlight if today
@@ -151,7 +169,7 @@ function showEvents(assignments, date) {
       const div = document.createElement("div");
       const link = document.createElement("a");
       link.href = assignment.html_url;
-      link.textContent = `${assignment.name} (Course: ${assignment.course_id})`;
+      link.textContent = `${assignment.name} (Course: ${coursesMap[assignment.course_id]})`;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       div.appendChild(link);
@@ -212,16 +230,24 @@ function renderAllAssignmentsList(assignments) {
       });
 
       // Assignment link
+      // Assignment name link
       const link = document.createElement("a");
       link.href = assignment.html_url;
-      link.textContent = `${assignment.name} (Course: ${assignment.course_id})`;
+      link.textContent = assignment.name;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
 
+      // Course name label (on its own line)
+      const courseLabel = document.createElement("div");
+      courseLabel.className = "course-label";
+      courseLabel.textContent = coursesMap[assignment.course_id] || "Unknown";
+
+      // Append to assignment item
       div.appendChild(checkbox);
       div.appendChild(link);
+      div.appendChild(courseLabel);
       listEl.appendChild(div);
-      
+
       // Scroll to today's date header if it exists
       const todayStr = new Date().toLocaleDateString('en-CA');
       const todayHeader = document.querySelector(`#assignments-list h3`);
@@ -249,14 +275,18 @@ function updateCalendarBadge(date) {
       badge = document.createElement("div");
       badge.className = "count-badge";
       dayDiv.appendChild(badge);
-      dayDiv.style.background = "#def";
     }
     badge.textContent = incompleteCount;
+  }  
+  const totalCount = assignmentsForDate.length;
+  if (totalCount === 0) {
+    dayDiv.style.background = ""; // no color if no assignments
+  } else if (totalCount <= 3) {
+    dayDiv.style.background = "#d4edda"; // green
+  } else if (totalCount <= 7) {
+    dayDiv.style.background = "#fff3cd"; // yellow
   } else {
-    if (badge) {
-      badge.remove();
-      dayDiv.style.background = "";
-    }
+    dayDiv.style.background = "#f8d7da"; // red
   }
 }
 
