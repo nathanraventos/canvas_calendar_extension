@@ -11,6 +11,8 @@ body {
   width: 740px;
   height: 560px;
   overflow: hidden;
+  background-color: #121416; /* very dark almost black */
+  color: #d0d7de; /* light gray text */
 }
 
 /* Flex container for left + right panels */
@@ -28,6 +30,9 @@ body {
   padding: 8px;
   overflow-y: auto;
   max-height: 580px;
+  background-color: #1f2428; /* dark slate */
+  border: 1px solid #30363d;
+  color: #adbac7;
 }
 
 .assignment-item {
@@ -38,7 +43,7 @@ body {
 .assignment-item a {
   text-decoration: none;
   text-decoration: none;
-  color: #333;
+  color: #adbac7;
   font-size: 17px;
 }
 
@@ -52,6 +57,8 @@ body {
   max-width: 400px;
   display: flex;
   flex-direction: column;
+  background-color: #1f2428;
+  color: #adbac7;
 }
 
 /* Calendar navigation */
@@ -84,11 +91,13 @@ body {
 /* Each day cell */
 #calendar > div {
   position: relative;
-  border: 1px solid #ccc;
+  border: 1px solid white;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: white;
+  background: #21262d;
+  border-color: white;
+  color: #eef;
   cursor: pointer;
   font-family: Arial, sans-serif;
 }
@@ -97,14 +106,15 @@ body {
   font-size: 20px;
   font-weight: bold;
   z-index: 1;
+  color: rgb(255, 255, 255);
 }
 
 .count-badge {
   position: absolute;
   top: 4px;
   left: 4px;
-  background-color: #3498db;
-  color: white;
+  background-color: #58a6ff;
+  color: black;
   font-size: 12px;
   padding: 2px 6px;
   border-radius: 12px;
@@ -148,7 +158,7 @@ body {
 #events a:hover,
 #events a:focus {
   text-decoration: underline;
-  background-color: #e8f0fe;
+  background-color: #1f6feb;
   outline: none;
 }
 
@@ -163,7 +173,8 @@ body {
 }
 
 .today {
-  background-color: #ffeaa7;
+  background-color: #2f81f7; /* bright blue highlight */
+  color: white;
 }
 
 /* Checkbox circle */
@@ -178,11 +189,12 @@ body {
   cursor: pointer;
   position: relative;
   transition: background-color 0.3s ease, border-color 0.3s ease;
+  border-color: #58a6ff;
 }
 
 .checkbox-circle.checked {
-  background-color: #3498db;
-  border-color: #3498db;
+  background-color: #2381e0;
+  border-color: #2381e0;
 }
 
 /* Add checkmark inside circle when checked */
@@ -210,3 +222,82 @@ body {
   margin-left: 34px; /* aligns under assignment name after checkbox */
   margin-top: 2px;
 }
+
+#assignments-list h3.today-header {
+  background-color: #ffeaa7;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+a {
+  color: #8abbf4; /* cool blue links */
+}
+
+#calendar > div:hover {
+  background-color: #4d5259;
+  box-shadow: 0 0 4px #58a6ff;
+}
+
+#stats-bar {
+  padding: 6px;
+  background-color: #21262d;
+  border: 1px solid #30363d;
+  color: #d0d7de;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+body.light-mode {
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+body.light-mode #assignments-list,
+body.light-mode .calendar-side {
+  background-color: #ffffff;
+  color: #333;
+}
+
+body.light-mode #calendar > div {
+  background: #f0f0f0;
+  border-color: #ccc;
+  color: #222;
+}
+
+body.light-mode .day-number {
+  color: #222;
+}
+
+body.light-mode .count-badge {
+  background-color: #3498db;
+  color: white;
+}
+
+body.light-mode .today {
+  background-color: #3498db;
+  color: white;
+}
+
+body.light-mode #events {
+  background-color: #ffffff;
+  color: #333;
+}
+
+body.light-mode a {
+  color: #0066cc;
+}
+
+#stats-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid #30363d;
+  background-color: #1f2428;
+  color: #d0d7de;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+

@@ -5,7 +5,13 @@ let assignmentsCache = [];
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth();
 let coursesMap = {};
-
+const courseColors = { 
+  101: "#4a90e2", // soft blue
+  102: "#50e3c2", // teal
+  103: "#9013fe", // purple
+  104: "#4178be", // darker blue
+  105: "#5a9bd4", // medium blue
+};
 const completedAssignments = new Set();
 
 // Load from localStorage on start for persistence
@@ -23,6 +29,7 @@ async function fetchCourses() {
 
   data.forEach(course => {
     coursesMap[course.id] = course.name;
+    courseColors[course.id] = `hsl(${Math.floor(Math.random()*360)}, 60%, 70%)`;
   });
 
   return data;
@@ -137,12 +144,13 @@ function buildCalendar(events, year, month) {
       // Color based on total assignments (not just incomplete)
       const totalCount = assignmentsToday.length;
       if (totalCount <= 3) {
-        dayDiv.style.background = "#d4edda"; // green
+        dayDiv.style.background = "#1a2e4f"; // dark blue-green
       } else if (totalCount <= 7) {
-        dayDiv.style.background = "#fff3cd"; // yellow
+        dayDiv.style.background = "#3a5068"; // medium blue-gray
       } else {
-        dayDiv.style.background = "#f8d7da"; // red
+        dayDiv.style.background = "#6b7a8f"; // lighter blue-gray (warning)
       }
+
 
     }
 
@@ -183,6 +191,49 @@ function renderAllAssignmentsList(assignments) {
   const listEl = document.getElementById("assignments-list");
   listEl.innerHTML = "";
 
+    // Create filter container div
+  const filterContainer = document.createElement("div");
+  filterContainer.style.marginBottom = "10px";
+
+  // Course dropdown
+  const courseFilter = document.createElement("select");
+  courseFilter.id = "courseFilter";
+
+  const allOption = document.createElement("option");
+  allOption.value = "all";
+  allOption.textContent = "All Courses";
+  courseFilter.appendChild(allOption);
+
+  Object.entries(coursesMap).forEach(([id, name]) => {
+    const option = document.createElement("option");
+    option.value = id;
+    option.textContent = name;
+    courseFilter.appendChild(option);
+  });
+
+  courseFilter.addEventListener("change", () => {
+    renderAllAssignmentsList(assignmentsCache);
+  });
+
+  // Search input
+  const searchInput = document.createElement("input");
+  searchInput.type = "text";
+  searchInput.placeholder = "Search assignments...";
+  searchInput.style.marginLeft = "8px";
+  searchInput.id = "assignmentSearch";
+
+  searchInput.addEventListener("input", () => {
+    renderAllAssignmentsList(assignmentsCache);
+  });
+
+  // Append both to container
+  filterContainer.appendChild(courseFilter);
+  filterContainer.appendChild(searchInput);
+
+  // Add container to list element
+  listEl.appendChild(filterContainer);
+
+
   // Group assignments by due date string
   const assignmentsByDate = {};
   assignments.forEach(a => {
@@ -202,14 +253,29 @@ function renderAllAssignmentsList(assignments) {
     const dateHeader = document.createElement("h3");
     dateHeader.textContent = date === "No Due Date" ? "No Due Date" : `Assignments for ${date}`;
     listEl.appendChild(dateHeader);
+    if (date === new Date().toLocaleDateString('en-CA')) {
+    dateHeader.classList.add("today-header");
+  }
+
 
     assignmentsByDate[date].forEach(assignment => {
+      const selectedCourse = document.getElementById("courseFilter").value;
+      const searchQuery = document.getElementById("assignmentSearch").value.toLowerCase();
+
+      if (selectedCourse !== "all" && assignment.course_id != selectedCourse) return;
+      if (assignment.name.toLowerCase().indexOf(searchQuery) === -1) return;
+
       const div = document.createElement("div");
       div.className = "assignment-item";
 
       // Checkbox circle
       const checkbox = document.createElement("span");
       checkbox.className = "checkbox-circle";
+      checkbox.style.borderColor = courseColors[assignment.course_id] || "#3498db";
+      if (completedAssignments.has(assignment.id)) {
+        checkbox.style.backgroundColor = courseColors[assignment.course_id] || "#3498db";
+      }
+
       if (completedAssignments.has(assignment.id)) {
         checkbox.classList.add("checked");
         div.classList.add("completed");
@@ -227,6 +293,7 @@ function renderAllAssignmentsList(assignments) {
         }
         updateCalendarBadge(getLocalDateString(assignment.due_at));
         saveCompletedAssignments();
+        updateStatsBar();
       });
 
       // Assignment link
@@ -241,6 +308,8 @@ function renderAllAssignmentsList(assignments) {
       const courseLabel = document.createElement("div");
       courseLabel.className = "course-label";
       courseLabel.textContent = coursesMap[assignment.course_id] || "Unknown";
+      courseLabel.style.color = courseColors[assignment.course_id] || "#666";
+
 
       // Append to assignment item
       div.appendChild(checkbox);
@@ -282,12 +351,20 @@ function updateCalendarBadge(date) {
   if (totalCount === 0) {
     dayDiv.style.background = ""; // no color if no assignments
   } else if (totalCount <= 3) {
-    dayDiv.style.background = "#d4edda"; // green
+    dayDiv.style.background = "#6b7a8f"; // green
   } else if (totalCount <= 7) {
-    dayDiv.style.background = "#fff3cd"; // yellow
+    dayDiv.style.background = "#3a5068"; // yellow
   } else {
-    dayDiv.style.background = "#f8d7da"; // red
+    dayDiv.style.background = "#1a2e4f"; // red
   }
+}
+
+// Update top stats bar with today's and total remaining assignments
+function updateStatsBar() {
+  const todayStr = new Date().toLocaleDateString('en-CA');
+  const totalRemaining = assignmentsCache.filter(a => !completedAssignments.has(a.id)).length;
+  const dueToday = assignmentsCache.filter(a => getLocalDateString(a.due_at) === todayStr && !completedAssignments.has(a.id)).length;
+  document.getElementById("stats-bar").textContent = `${dueToday} due today | ${totalRemaining} remaining`;
 }
 
 // Save completed assignments to localStorage
@@ -331,4 +408,25 @@ fetchAllAssignments().then(assignments => {
 
   // Render full assignments list with checkboxes in left panel
   renderAllAssignmentsList(assignmentsCache);
+  updateStatsBar();
+  const modeToggle = document.createElement("button");
+    modeToggle.textContent = "Toggle Mode";
+    modeToggle.style.marginBottom = "8px";
+    modeToggle.style.padding = "6px 12px";
+    modeToggle.style.border = "1px solid #58a6ff";
+    modeToggle.style.backgroundColor = "#121416";
+    modeToggle.style.color = "#d0d7de";
+    modeToggle.style.borderRadius = "4px";
+    modeToggle.style.cursor = "pointer";
+
+    modeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+      if (document.body.classList.contains("light-mode")) {
+        localStorage.setItem("mode", "light");
+      } else {
+        localStorage.setItem("mode", "dark");
+      }
+    });
+
+    document.getElementById("stats-bar").appendChild(modeToggle);
 });
